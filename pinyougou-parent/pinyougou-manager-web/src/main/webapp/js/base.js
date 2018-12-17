@@ -1,0 +1,1 @@
+var app = angular.module("pinyougou",[]); //引入js模块
