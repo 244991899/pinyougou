@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService){	
+app.controller('goodsController' ,function($scope,$controller,itemCatService,goodsService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -16,7 +16,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 	$scope.findPage=function(page,rows){			
 		goodsService.findPage(page,rows).success(
 			function(response){
-				$scope.list=response.rows;	
+				$scope.list=response.rows;
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
 		);
@@ -53,7 +53,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 	
 	 
 	//批量删除 
-	$scope.dele=function(){			
+	$scope.dele=function(){
 		//获取选中的复选框			
 		goodsService.dele( $scope.selectIds ).success(
 			function(response){
@@ -71,10 +71,29 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 	$scope.search=function(page,rows){			
 		goodsService.search(page,rows,$scope.searchEntity).success(
 			function(response){
-				$scope.list=response.rows;	
+				$scope.list=response.rows;
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
 		);
 	}
-    
+    $scope.status=['未审核','已审核','审核未通过','关闭'];
+	$scope.categoryList = []; /*定义集合分类级别列表*/
+	$scope.findCategory = function () {
+        itemCatService.findAll().success(function (response) {
+            for (var i = 0; i < response.length; i++) {
+                $scope.categoryList[response[i].id] = response[i].name;/*把获取到的值全部赋值给集合中的对应索引*/
+            }
+        })
+    }
+    /*修改状态*/
+    $scope.updateStatus = function (status) {
+        goodsService.updateStatus($scope.selectIds,status).success(function (response) {
+            if(response.success){
+                alert("修改成功");
+                $scope.reloadList();//重新加载
+            }else {
+                alert("修改失败")
+            }
+        })
+    }
 });	

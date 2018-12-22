@@ -14,10 +14,20 @@
     <link rel="stylesheet" href="../css/style.css">
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
-
+	<script src="../plugins/angularjs/angular.min.js"></script>
+	<!-- 分页组件开始 -->
+	<script src="../plugins/angularjs/pagination.js"></script>
+	<link rel="stylesheet" href="../plugins/angularjs/pagination.css">
+	<!-- 分页组件结束 -->
+	<!--引入分页自定义js模块-->
+	<script src="../js/base_pageNation.js"></script>
+	<script src="../js/service/goodsService.js"></script>
+	<script src="../js/service/itemCatService.js"></script>
+	<script src="../js/controller/baseController.js"></script>
+	<script src="../js/controller/goodsController.js"></script>
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" >
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController" ng-init="findCategory()">
   <!-- .box-body -->
                 
                     <div class="box-header with-border">
@@ -33,17 +43,24 @@
                             <div class="pull-left">
                                 <div class="form-group form-inline">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
-                                        <button type="button" class="btn btn-default" title="审核通过" ><i class="fa fa-check"></i> 审核通过</button>
-                                        <button type="button" class="btn btn-default" title="驳回" ><i class="fa fa-ban"></i> 驳回</button>                                  
+                                        <button type="button" class="btn btn-default" title="删除" ng-click="dele()"><i class="fa fa-trash-o"></i> 删除</button>
+                                        <button type="button" class="btn btn-default" title="审核通过" ng-click="updateStatus('1')"><i class="fa fa-check"></i> 审核通过</button>
+                                        <button type="button" class="btn btn-default" title="驳回" ng-click="updateStatus('2')"><i class="fa fa-ban"></i> 驳回</button>
                                         <button type="button" class="btn btn-default" title="刷新" ><i class="fa fa-refresh"></i> 刷新</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-                                    商品名称：<input >
-									<button class="btn btn-default" >查询</button>                                    
+									状态：<select ng-model="searchEntity.auditStatus">
+									 <option value="">全部</option>
+									 <option value="0">未审核</option>
+									 <option value="1">审核通过</option>
+									 <option value="2">审核未通过</option>
+									 <option value="3">已关闭</option>
+								</select>
+                                    商品名称：<input ng-model="searchEntity.goodsName">
+									<button class="btn btn-default" ng-click="reloadList()">查询</button>
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -61,60 +78,24 @@
 									      <th class="sorting">一级分类</th>
 									      <th class="sorting">二级分类</th>
 									      <th class="sorting">三级分类</th>
-									      <th class="sorting">状态</th>									     						
+									      <th class="sorting">状态</th>
 					                      <th class="text-center">操作</th>
 			                          </tr>
 			                      </thead>
 			                      <tbody>
-			                          <tr>
-			                              <td><input type="checkbox"></td>			                              
-				                          <td>1</td>
-									      <td>华为Mete8</td>
-									      <td>3020</td>
-									      <td>数码产品</td>
-									      <td>手机</td>
-									      <td>国产手机</td>
+			                          <tr  ng-repeat="pojo in list">
+			                              <td><input type="checkbox" ng-click="updateselection($event,pojo.id)"></td>
+				                          <td>{{pojo.id}}</td>
+									      <td>{{pojo.goodsName}}</td>
+									      <td>{{pojo.price}}</td>
+									      <td>{{categoryList[pojo.category1Id]}}</td>
+									      <td>{{categoryList[pojo.category2Id]}}</td>
+									      <td>{{categoryList[pojo.category3Id]}}</td>
 		                                  <td>		                                  
 		                                  	<span>
-		                                  		申请中
+		                                  		{{status[pojo.auditStatus]}}
 		                                  	</span>
 		                                  	
-		                                  </td>		                                  
-		                                  <td class="text-center">                                          
-		                                 	  <button type="button" class="btn bg-olive btn-xs" >详情</button>                  
-		                                  </td>
-			                          </tr>
-									  <tr>
-			                              <td><input type="checkbox"></td>			                              
-				                          <td>2</td>
-									      <td>三星手雷</td>
-									      <td>1080</td>
-									      <td>数码产品</td>
-									      <td>手机</td>
-									      <td>进口手机</td>
-		                                  <td>	                                 
-		                                  	
-		                                  	<span>
-		                                  		已驳回
-		                                  	</span>
-		                                  </td>		                                  
-		                                  <td class="text-center">                                          
-		                                 	  <button type="button" class="btn bg-olive btn-xs" >详情</button>                  
-		                                  </td>
-			                          </tr>
-									   <tr>
-			                              <td><input type="checkbox"></td>			                              
-				                          <td>3</td>
-									      <td>小米6S</td>
-									      <td>999</td>
-									      <td>数码产品</td>
-									      <td>手机</td>
-									      <td>国产手机</td>
-		                                  <td>	                                 
-		                                  	
-		                                  	<span>
-		                                  		审核通过
-		                                  	</span>
 		                                  </td>		                                  
 		                                  <td class="text-center">                                          
 		                                 	  <button type="button" class="btn bg-olive btn-xs" >详情</button>                  
@@ -122,9 +103,8 @@
 			                          </tr>
 			                      </tbody>
 			                  </table>
-			                  <!--数据列表/-->                        
-							  
-							 
+			                  <!--数据列表/-->
+							<tm-pagination conf="paginationConf"></tm-pagination><!--分页对象（页面的表格下放置分页组件）-->
                         </div>
                         <!-- 数据表格 /-->
                         

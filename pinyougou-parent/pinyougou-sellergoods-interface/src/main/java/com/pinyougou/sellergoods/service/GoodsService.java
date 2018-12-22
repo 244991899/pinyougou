@@ -4,6 +4,8 @@ import com.pinyougou.pojo.TbGoods;
 
 import com.pinyougou.pojogroup.Goods;
 import entity.PageResult;
+import entity.Result;
+
 /**
  * 服务层接口
  * @author Administrator
@@ -34,7 +36,7 @@ public interface GoodsService {
 	/**
 	 * 修改
 	 */
-	public void update(TbGoods goods);
+	public void update(Goods goods);
 	
 
 	/**
@@ -42,7 +44,7 @@ public interface GoodsService {
 	 * @param id
 	 * @return
 	 */
-	public TbGoods findOne(Long id);
+	public Goods findOne(Long id);
 	
 	
 	/**
@@ -58,4 +60,6 @@ public interface GoodsService {
 	 * @return
 	 */
 	public PageResult findPage(TbGoods goods, int pageNum, int pageSize);
+
+	public void updateStatus(Long[] id,String status);
 }
