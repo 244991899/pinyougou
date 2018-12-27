@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.pinyougou.mapper.TbSpecificationOptionMapper;
 import com.pinyougou.pojo.TbSpecificationOption;
 import com.pinyougou.pojo.TbSpecificationOptionExample;
@@ -17,6 +18,7 @@ import com.pinyougou.pojo.TbTypeTemplateExample.Criteria;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 
 import entity.PageResult;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 服务实现层
@@ -54,7 +56,6 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	public void add(TbTypeTemplate typeTemplate) {
 		typeTemplateMapper.insert(typeTemplate);		
 	}
-
 	
 	/**
 	 * 修改
@@ -83,9 +84,7 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 			typeTemplateMapper.deleteByPrimaryKey(id);
 		}		
 	}
-	
-	
-		@Override
+	@Override
 	public PageResult findPage(TbTypeTemplate typeTemplate, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		
@@ -105,15 +104,29 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 			if(typeTemplate.getCustomAttributeItems()!=null && typeTemplate.getCustomAttributeItems().length()>0){
 				criteria.andCustomAttributeItemsLike("%"+typeTemplate.getCustomAttributeItems()+"%");
 			}
-	
 		}
 		
 		Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);		
+		//缓存处理
+		saveToRedis();
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 	@Autowired
+	private RedisTemplate redisTemplate;
+	private void saveToRedis(){
+		List<TbTypeTemplate> templateList = findAll();
+		for (TbTypeTemplate tbTypeTemplate : templateList) {
+			//得到品牌列表
+			List brandList = JSON.parseArray(tbTypeTemplate.getBrandIds(),Map.class);
+			redisTemplate.boundHashOps("brandList").put(tbTypeTemplate.getId(),brandList);
+			//得到规格列表
+			List<Map> specList = findSpecList(tbTypeTemplate.getId());
+			redisTemplate.boundHashOps("specList").put(tbTypeTemplate.getId(),specList);
+		}
+	}
+	@Autowired
 	private TbSpecificationOptionMapper specificationOptionMapper;
-
+	//注意观察这个逻辑方法
 	@Override
 	public List<Map> findSpecList(Long id) {
 		//查出模板
@@ -131,6 +144,4 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 		}
 		return list;
 	}
-
-
 }

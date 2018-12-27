@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -242,5 +243,19 @@ public class GoodsServiceImpl implements GoodsService {
 			goods.setAuditStatus(status);
 			goodsMapper.updateByPrimaryKey(goods);
 		}
+	}
+
+	/**
+	 * 根据spuID 查询 sku列表
+	 * @param goodsIds
+	 * @param status
+	 * @return
+	 */
+	public List<TbItem> searchTtemListByGoodsIdListAndStatus(Long[] goodsIds,String status){
+		TbItemExample example = new TbItemExample();
+		TbItemExample.Criteria criteria = example.createCriteria();
+		criteria.andStatusEqualTo("1");
+		criteria.andGoodsIdIn(Arrays.asList(goodsIds)); //spu id集合
+		return itemMapper.selectByExample(example);
 	}
 }
