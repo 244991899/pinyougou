@@ -2,6 +2,7 @@ package com.pinyougou.manager.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.search.service.ItemSearchService;
@@ -130,10 +131,16 @@ public class GoodsController {
 		try {
 			goodsService.updateStatus(ids,status);
 			if("1".equals(status)){ //如果审核通过
+				//导入索引库
+				//得到需要导入的SKU列表
 				List<TbItem> itemList = goodsService.searchTtemListByGoodsIdListAndStatus(ids, status);
-				//数据导入
+				//数据导入solr
 				if(itemList.size()>0){
 					itemSearchService.importList(itemList);
+					//生成商品详细页
+					for (Long id : ids) {
+						itemPageService.genItemHtml(id);
+					}
 				}else {
 					System.out.println("没有明细数据");
 				}
@@ -143,5 +150,11 @@ public class GoodsController {
 			e.printStackTrace();
 			return new Result(false, "修改失败");
 		}
+	}
+	@Reference(timeout = 10000)
+	private ItemPageService itemPageService;
+	@RequestMapping("genHtml")
+	public void genHtml(Long goodsId){
+		itemPageService.genItemHtml(goodsId);
 	}
 }
