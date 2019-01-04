@@ -20,7 +20,7 @@ public class SolrUtil {
     @Autowired
     private SolrTemplate solrTemplate;
     /**
-     * 导入上平数据
+     * 导入商品数据
      */
     public void importItemData(){
         TbItemExample example = new TbItemExample();

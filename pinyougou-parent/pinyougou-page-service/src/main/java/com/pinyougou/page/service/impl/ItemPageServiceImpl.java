@@ -1,6 +1,6 @@
 package com.pinyougou.page.service.impl;
 
-import com.alibaba.dubbo.config.annotation.Service;
+//import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.mapper.TbGoodsDescMapper;
 import com.pinyougou.mapper.TbGoodsMapper;
 import com.pinyougou.mapper.TbItemCatMapper;
@@ -15,6 +15,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 
 import java.io.*;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Component
 public class ItemPageServiceImpl implements ItemPageService {
     @Value("${pagedir}")
     private String pagedir;
@@ -76,6 +77,24 @@ public class ItemPageServiceImpl implements ItemPageService {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(pagedir+goodsId+".html"), "UTF-8");
             template.process(dataModel,writer); //根据模型输出生成页面
             writer.close();//关闭流
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 删除页面
+     * @param goodsIds
+     * @return
+     */
+    @Override
+    public boolean deleteItemHtml(Long[] goodsIds) {
+        try {
+            for(Long goodsId:goodsIds){
+                boolean delete = new File(pagedir + goodsId + ".html").delete();
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@
 	<!--配置spring-security.xml路径的-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring/spring-security.xml</param-value>
+		<param-value>classpath:spring/spring-*.xml</param-value>
 	</context-param>
 	<!--配置context域对象创建的监听器-->
 	<listener>
