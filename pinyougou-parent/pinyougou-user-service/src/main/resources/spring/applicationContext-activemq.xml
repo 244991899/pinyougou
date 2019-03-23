@@ -28,6 +28,6 @@
     </bean>
     <!--这个是点对点消息 -->
     <bean id="smsDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="sms"/>
+        <constructor-arg value="sms"/> <!--接收消息时对应的名字-->
     </bean>
 </beans>

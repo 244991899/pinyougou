@@ -31,6 +31,7 @@
 		<!-- 加载mybatis的全局配置文件 -->
 		<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml" />
 	</bean>
+	<!--开启注解扫描，把所有的接口注入到spring容器，生成对象实例-->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.pinyougou.mapper" />
 	</bean>

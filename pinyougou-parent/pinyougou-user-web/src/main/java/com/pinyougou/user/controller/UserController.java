@@ -106,7 +106,7 @@ public class UserController {
 	
 		/**
 	 * 查询+分页
-	 * @param brand
+	 * @param user
 	 * @param page
 	 * @param rows
 	 * @return

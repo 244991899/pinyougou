@@ -17,7 +17,7 @@
 	<http pattern="/plugins/**" security="none"/>
 	<http pattern="/register.html" security="none"/>
 	<http pattern="/user/add.do" security="none"/>
-	<http pattern="/user/sendCode.do" security="none"/>
+	<http pattern="/user/sendCode.do*" security="none"/>
 
 	<!-- entry-point-ref 入口点引用 -->
 	<!--use-expressions="false"不使用表达式-->
@@ -33,7 +33,6 @@
 	<!-- CAS 入口点 开始 -->
 	<beans:bean id="casProcessingFilterEntryPoint"
 				class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
-
 		<!-- 单点登录服务器登录 URL -->
 		<beans:property name="loginUrl" value="http://localhost:9100/cas/login"/>
 		<beans:property name="serviceProperties" ref="serviceProperties"/>

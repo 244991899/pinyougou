@@ -1,0 +1,1 @@
+var app = angular.module("pinyougou",['pagination']); //引入js模块
