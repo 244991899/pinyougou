@@ -30,7 +30,7 @@ public class PhoneFormatCheckUtils {
     }  
   
     /** 
-     * 香港手机号码8位数，5|6|8|9开头+7位任意数 
+     * 香港手机号码8位数，5|6|8|9开头+7位任意数 onBranch
      */  
     public static boolean isHKPhoneLegal(String str)throws PatternSyntaxException {  
         String regExp = "^(5|6|8|9)\\d{7}$";  
