@@ -19,7 +19,7 @@ public class PhoneFormatCheckUtils {
      * 13+任意数 
      * 15+除4的任意数 
      * 18+除1和4的任意数 
-     * 17+除9的任意数 
+     * 17+除9的任意数 11
      * 147 
      */  
     public static boolean isChinaPhoneLegal(String str) throws PatternSyntaxException {  
