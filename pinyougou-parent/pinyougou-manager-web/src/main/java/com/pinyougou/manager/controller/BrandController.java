@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * brand
+ * brand one
  */
 @RestController
 @RequestMapping("/brand")
